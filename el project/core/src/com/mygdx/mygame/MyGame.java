@@ -8,6 +8,7 @@ import com.badlogic.gdx.Game;
 
 public class MyGame extends Game {
 	public SpriteBatch batch;
+	public static final int V_WIDTH = 256 ,V_HEIGHT = 224;
 
 	@Override
 	public void create() {
