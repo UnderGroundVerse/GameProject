@@ -3,6 +3,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -11,12 +12,14 @@ public class PlayScreen implements Screen {
     private OrthographicCamera gamecam;
     private HUD hud;
     private Viewport gamePort;
+    Texture  mario;
 
     public PlayScreen(MyGame game){
         this.game=game;
         gamecam = new OrthographicCamera();
         gamePort= new FitViewport(MyGame.V_WIDTH,MyGame.V_HEIGHT,gamecam);
         hud = new HUD(game.batch);
+        mario = new Texture("mario_ntsc.png");
     }
 
     @Override
@@ -31,6 +34,10 @@ public class PlayScreen implements Screen {
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
+
+        game.batch.begin();
+        game.batch.draw(mario,0,0);
+        game.batch.end();
     }
 
     @Override
