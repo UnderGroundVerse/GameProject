@@ -18,6 +18,7 @@ public class MyGame extends Game {
 		super.render();
 
 
+
 	}
 
 	@Override
