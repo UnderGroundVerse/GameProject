@@ -1,5 +1,6 @@
 package com.mygdx.mygame;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.GL20;
@@ -31,6 +32,8 @@ public class PlayScreen implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr;
 
+    private MC mc;
+
     public PlayScreen(MyGame game){
         this.game=game;
 
@@ -52,7 +55,7 @@ public class PlayScreen implements Screen {
         gamecam.position.set(gamePort.getWorldWidth() /2 ,gamePort.getWorldHeight()/2 ,0);
 
         //box2d
-        world = new World(new Vector2(0,0),true);
+        world = new World(new Vector2(0,-9.81f*32),true);
         b2dr = new Box2DDebugRenderer();
 
         BodyDef bdef = new BodyDef();
@@ -74,20 +77,31 @@ public class PlayScreen implements Screen {
             body.createFixture(fdef);
 
         }
-
-
+       mc = new MC(world);
 
     }
+
+
     public void handleInput(float dt){
-        if(Gdx.input.isTouched())
-            gamecam.position.x+=10;
+        if(Gdx.input.isKeyJustPressed(Input.Keys.W))
+            mc.b2body.applyLinearImpulse(new Vector2(0,500f),mc.b2body.getWorldCenter(),true );
+
+        if(Gdx.input.isKeyPressed(Input.Keys.D) && mc.b2body.getLinearVelocity().x <= 100)
+            mc.b2body.applyLinearImpulse(new Vector2(10,0),mc.b2body.getWorldCenter(),true);
+
+        if(Gdx.input.isKeyPressed(Input.Keys.A) && mc.b2body.getLinearVelocity().x >= -100)
+            mc.b2body.applyLinearImpulse(new Vector2(-10,0),mc.b2body.getWorldCenter(),true);
+
 
     }
     public void update (float dt){
 
         handleInput(dt);
+        gamecam.position.x = mc.b2body.getPosition().x;
         gamecam.update();
         mapRenderer.setView(gamecam);
+        world.step(1/60f,8,5);
+
 
     }
 
