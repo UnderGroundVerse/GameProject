@@ -36,6 +36,7 @@ public class PlayScreen implements Screen {
     private MainCharacter mainCharacter;
 
     private TextureAtlas atlas;
+    Enemy enemy;
 
     public PlayScreen(MyGame game){
         this.game=game;
@@ -67,6 +68,9 @@ public class PlayScreen implements Screen {
         mainCharacter.stand = new TextureRegion(mainCharacter.McSprite.getTexture(),130,20,20,34);
         mainCharacter.McSprite.setBounds(0,0,20,34);
         mainCharacter.McSprite.setRegion(mainCharacter.stand);
+        enemy = new Enemy();
+
+        world.setContactListener(new ListenerClass());
     }
 
     public TextureAtlas getAtlas(){
