@@ -43,7 +43,7 @@ public class PlayScreen implements Screen {
 
         //map
         maploader = new TmxMapLoader();
-        map = maploader.load("map1.tmx");
+        map = maploader.load("map.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         gamecam.position.set(gamePort.getWorldWidth() /2 ,gamePort.getWorldHeight()/2 ,0);
 
