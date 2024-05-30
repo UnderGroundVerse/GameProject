@@ -14,13 +14,21 @@ public class B2WorldCreator extends Body2D
         super();
         rect = new Rectangle();
 
-        for(MapObject object : map.getLayers().get(1).getObjects().getByType(RectangleMapObject.class)){
+        for(MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)){
             DefineBody();
             DefineShape();
             DefineFixture();
             rect =  ( (RectangleMapObject) object).getRectangle();
             CreateBody();
         }
+
+        /*for(MapObject object : map.getLayers().get().getObjects().getByType(RectangleMapObject.class)){
+            DefineBody();
+            DefineShape();
+            DefineFixture();
+            rect =  ( (RectangleMapObject) object).getRectangle();
+            CreateBody();
+        } */
     }
 
     @Override
@@ -33,6 +41,7 @@ public class B2WorldCreator extends Body2D
     @Override
     public void DefineShape() {
         shape.setAsBox(rect.getWidth()/2, rect.getHeight()/2);
+
     }
 
     @Override

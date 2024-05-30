@@ -1,0 +1,13 @@
+AllSprites.png
+size:512,64
+repeat:none
+attack
+bounds:2,20,128,34
+crouch
+bounds:132,20,64,34
+jump
+bounds:198,20,64,34
+lanterns
+bounds:2,2,64,16
+walk
+bounds:264,20,64,34
