@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.Game;
 
 public class MyGame extends Game {
-	public SpriteBatch batch;
-	public static final int V_WIDTH = 256 ,V_HEIGHT = 224;
+	public static SpriteBatch batch;
+	public static final int V_WIDTH = 256, V_HEIGHT = 224;
 
 	@Override
 	public void create() {
@@ -17,14 +17,12 @@ public class MyGame extends Game {
 	public void render() {
 		super.render();
 
-
-
 	}
 
 	@Override
 	public void resize(int width ,int height){
-
 		super.resize(width,height);
+
 	}
 	
 	@Override
