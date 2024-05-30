@@ -4,6 +4,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -31,6 +35,8 @@ public class PlayScreen implements Screen {
 
     private MainCharacter mainCharacter;
 
+    private TextureAtlas atlas;
+
     public PlayScreen(MyGame game){
         this.game=game;
     }
@@ -54,8 +60,18 @@ public class PlayScreen implements Screen {
         new B2WorldCreator(map);
 
         mainCharacter = MainCharacter.GetMainCharacter();
+
+        //mc animation
+        atlas = new TextureAtlas("AllSprites.atlas");
+        mainCharacter.McSprite = new Sprite(atlas.findRegion("walk"));
+        mainCharacter.stand = new TextureRegion(mainCharacter.McSprite.getTexture(),130,20,20,34);
+        mainCharacter.McSprite.setBounds(0,0,20,34);
+        mainCharacter.McSprite.setRegion(mainCharacter.stand);
     }
 
+    public TextureAtlas getAtlas(){
+        return atlas;
+    }
 
     public void handleInput(float dt){
         if(Gdx.input.isKeyJustPressed(Input.Keys.W))
@@ -77,6 +93,9 @@ public class PlayScreen implements Screen {
         mapRenderer.setView(gamecam);
         world.step(1/60f,8,5);
 
+        mainCharacter.McSprite.setPosition(mainCharacter.b2body.getPosition().x,mainCharacter.b2body.getPosition().y);
+
+
 
     }
 
@@ -93,6 +112,9 @@ public class PlayScreen implements Screen {
         mapRenderer.render();
 
         b2dr.render(world,gamecam.combined);
+        game.batch.begin();
+        mainCharacter.McSprite.draw(game.batch);
+        game.batch.end();
     }
 
     @Override

@@ -1,10 +1,17 @@
 package com.mygdx.mygame;
 
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
 
 public class MainCharacter extends Body2D
 {
     private static MainCharacter instance;
+    public PlayScreen screen;
+    public Sprite McSprite;
+    public TextureRegion stand;
 
     private MainCharacter()
     {
@@ -22,12 +29,12 @@ public class MainCharacter extends Body2D
 
     @Override
     public void DefineShape() {
-        shape.setAsBox(10,20);
+        shape.setAsBox(10,15);
     }
 
     @Override
     public void DefineFixture() {
-        fdef.friction = 10f;
+        //fdef.friction = 10f;
         fdef.shape = shape;
     }
 
