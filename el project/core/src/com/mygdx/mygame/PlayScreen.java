@@ -31,6 +31,8 @@ public class PlayScreen implements Screen {
 
     private MainCharacter mainCharacter;
 
+    Enemy enemy;
+
     public PlayScreen(MyGame game){
         this.game=game;
     }
@@ -54,6 +56,9 @@ public class PlayScreen implements Screen {
         new B2WorldCreator(map);
 
         mainCharacter = MainCharacter.GetMainCharacter();
+        enemy = new Enemy();
+
+        world.setContactListener(new ListenerClass());
     }
 
 
