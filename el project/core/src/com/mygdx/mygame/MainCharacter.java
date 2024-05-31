@@ -16,6 +16,7 @@ public class MainCharacter extends Body2D
     private MainCharacter(Rectangle rectangle)
     {
         super(rectangle);
+
     }
 
     @Override

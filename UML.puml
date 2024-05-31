@@ -1,0 +1,123 @@
+@startuml
+class HUD {
++ Stage stage
+- Viewport viewport
+- int worldTimer
+- float timeCount
+- int score
+~ Label countdownLabel
+~ Label scoreLabel
+~ Label timeLabel
+~ Label levelLabel
+~ Label marioLabel
+~ Label worldLabel
++ <<Create>> HUD(SpriteBatch)
++ void dispose()
+}
+
+
+class ListenerClass {
++ void beginContact(Contact)
++ void endContact(Contact)
++ void preSolve(Contact,Manifold)
++ void postSolve(Contact,ContactImpulse)
+}
+
+class Brick {
++ <<Create>> Brick(Rectangle)
++ void DefineBody()
+}
+
+class MyGame {
++ {static} SpriteBatch batch
++ {static} int V_WIDTH
++ void create()
++ void render()
++ void resize(int,int)
++ void dispose()
++ void pause()
++ void resume()
+}
+
+
+class PlayScreen {
+- {static} float GRAVITY_X
+- {static} float GRAVITY_Y
+- OrthographicCamera gameCam
+- Viewport gamePort
+- HUD hud
+- TiledMap map
+- OrthogonalTiledMapRenderer mapRenderer
++ {static} World world
+- Box2DDebugRenderer debugRenderer
+- MainCharacter mainCharacter
++ <<Create>> PlayScreen()
++ void show()
++ void handleInput(float)
++ void update(float)
++ void render(float)
++ void resize(int,int)
++ void pause()
++ void resume()
++ void hide()
++ void dispose()
+}
+
+
+class Pipe {
++ <<Create>> Pipe(Rectangle)
++ void DefineBody()
+}
+
+class Ground {
++ <<Create>> Ground(Rectangle)
++ void DefineBody()
+}
+
+class B2WorldCreator {
+~ Rectangle rect
++ <<Create>> B2WorldCreator(Map)
+}
+
+
+abstract class Body2D {
+~ Body b2body
+~ BodyDef bdef
+~ PolygonShape shape
+~ FixtureDef fdef
+~ Rectangle rectangle
++ <<Create>> Body2D(Rectangle)
++ {abstract}void DefineBody()
++ void DefineShape()
++ void DefineFixture()
++ void CreateBody()
+}
+
+
+class MainCharacter {
+- {static} MainCharacter instance
+~ Sprite sprite
+~ {static} Rectangle rectangle
+- <<Create>> MainCharacter(Rectangle)
++ void DefineBody()
++ {static} MainCharacter GetMainCharacter()
+}
+
+
+class Coin {
++ <<Create>> Coin(Rectangle)
++ void DefineBody()
+}
+
+
+
+Disposable <|.. HUD
+ContactListener <|.. ListenerClass
+Body2D <|-- Brick
+Game <|-- MyGame
+Screen <|.. PlayScreen
+Body2D <|-- Pipe
+Body2D <|-- Ground
+Body2D <|-- MainCharacter
+Body2D <|-- Coin
+@enduml
