@@ -8,12 +8,11 @@ import com.mygdx.mygame.MyGame;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+
 		config.setForegroundFPS(60);
 		config.setTitle("MyGame");
-		//config.setWindowedMode(256,224);
-		config.setTitle("el Project el fager");
+		config.setWindowedMode(256,224);
+
 		new Lwjgl3Application(new MyGame(), config);
-
-
 	}
 }

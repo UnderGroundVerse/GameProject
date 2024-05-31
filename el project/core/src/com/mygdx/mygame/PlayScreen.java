@@ -6,119 +6,114 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class PlayScreen implements Screen {
-    private MyGame game;
 
-    private OrthographicCamera gamecam;
+    private static final float GRAVITY_X = 0.00f;
+    private static final float GRAVITY_Y = -10.00f;
+
+    private OrthographicCamera gameCam;
     private Viewport gamePort;
 
     private HUD hud;
 
     //tiled map variables
-    private TmxMapLoader maploader;
     private TiledMap map;
     private OrthogonalTiledMapRenderer mapRenderer;
 
-    //box2d variable
+    //box2d variables
     public static World world;
-    private Box2DDebugRenderer b2dr;
+    private Box2DDebugRenderer debugRenderer;
 
     private MainCharacter mainCharacter;
 
-    private TextureAtlas atlas;
-    Enemy enemy;
+    public PlayScreen()
+    {
+        gameCam = new OrthographicCamera(MyGame.V_WIDTH, MyGame.V_HEIGHT); // Sets camera to 256x224 world units
+        gameCam.position.set(gameCam.viewportWidth / 2.0f, gameCam.viewportHeight / 2.0f, 0); // Sets (0,0) to bottom left
 
-    public PlayScreen(MyGame game){
-        this.game=game;
+        gamePort = new FitViewport(gameCam.viewportWidth, gameCam.viewportHeight, gameCam); // viewport
+
+        hud = new HUD(MyGame.batch);
+
+        map = new TmxMapLoader().load("level1.tmx"); // load map
+        mapRenderer = new OrthogonalTiledMapRenderer(map); // render map
+
+        world = new World(new Vector2(GRAVITY_X, GRAVITY_Y), true); // define world
+        debugRenderer = new Box2DDebugRenderer(); // for debugging purposes
+
+        mainCharacter = MainCharacter.GetMainCharacter();
+        mainCharacter.sprite = new Sprite(new Texture("Sprite-0001.png"));
+
+        B2WorldCreator b2WorldCreator = new B2WorldCreator(map);
     }
 
     @Override
     public void show() {
-        gamecam = new OrthographicCamera();
-        gamePort= new FitViewport(MyGame.V_WIDTH,MyGame.V_HEIGHT,gamecam);
-        hud = new HUD(game.batch);
-
-        //map
-        maploader = new TmxMapLoader();
-        map = maploader.load("map.tmx");
-        mapRenderer = new OrthogonalTiledMapRenderer(map);
-        gamecam.position.set(gamePort.getWorldWidth() /2 ,gamePort.getWorldHeight()/2 ,0);
-
-        //box2d
-        world = new World(new Vector2(0,-9.81f*32),true);
-        b2dr = new Box2DDebugRenderer();
-
-        new B2WorldCreator(map);
-
-        mainCharacter = MainCharacter.GetMainCharacter();
-
-        //mc animation
-        atlas = new TextureAtlas("AllSprites.atlas");
-        mainCharacter.McSprite = new Sprite(atlas.findRegion("walk"));
-        mainCharacter.stand = new TextureRegion(mainCharacter.McSprite.getTexture(),130,20,20,34);
-        mainCharacter.McSprite.setBounds(0,0,20,34);
-        mainCharacter.McSprite.setRegion(mainCharacter.stand);
-        enemy = new Enemy();
-
-        world.setContactListener(new ListenerClass());
-    }
-
-    public TextureAtlas getAtlas(){
-        return atlas;
-    }
-
-    public void handleInput(float dt){
-        if(Gdx.input.isKeyJustPressed(Input.Keys.W))
-            mainCharacter.b2body.applyLinearImpulse(new Vector2(0,500f), mainCharacter.b2body.getWorldCenter(),true );
-
-        if(Gdx.input.isKeyPressed(Input.Keys.D) && mainCharacter.b2body.getLinearVelocity().x <= 100)
-            mainCharacter.b2body.applyLinearImpulse(new Vector2(10,0), mainCharacter.b2body.getWorldCenter(),true);
-
-        if(Gdx.input.isKeyPressed(Input.Keys.A) && mainCharacter.b2body.getLinearVelocity().x >= -100)
-            mainCharacter.b2body.applyLinearImpulse(new Vector2(-10,0),mainCharacter.b2body.getWorldCenter(),true);
-
 
     }
+
+    public void handleInput(float dt)
+    {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP))
+        {
+            mainCharacter.b2body.applyLinearImpulse(new Vector2(0, 4f), mainCharacter.b2body.getWorldCenter(), true);
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && mainCharacter.b2body.getLinearVelocity().x <= 20)
+        {
+            mainCharacter.b2body.applyLinearImpulse(new Vector2(10f, 0), mainCharacter.b2body.getWorldCenter(), true);
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && mainCharacter.b2body.getLinearVelocity().x >= -20)
+        {
+            mainCharacter.b2body.applyLinearImpulse(new Vector2(-10f, 0), mainCharacter.b2body.getWorldCenter(), true);
+        }
+    }
+
     public void update (float dt){
-
         handleInput(dt);
-        gamecam.position.x = mainCharacter.b2body.getPosition().x;
-        gamecam.update();
-        mapRenderer.setView(gamecam);
-        world.step(1/60f,8,5);
 
-        mainCharacter.McSprite.setPosition(mainCharacter.b2body.getPosition().x,mainCharacter.b2body.getPosition().y);
+        gameCam.position.set(mainCharacter.b2body.getPosition().x, gameCam.viewportHeight / 2, 0);
 
+        gameCam.update();
 
+        world.step(1/60f, 6, 2);
 
+        mapRenderer.setView(gameCam);
+
+        mainCharacter.sprite.setPosition((mainCharacter.b2body.getPosition().x) - (mainCharacter.sprite.getWidth() / 2.0f), (mainCharacter.b2body.getPosition().y) - (mainCharacter.sprite.getHeight() / 2.0f));
     }
 
 
     @Override
     public void render(float delta) {
         update(delta);
+
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        mapRenderer.render();
+        debugRenderer.render(world, gameCam.combined);
+
+        hud.stage.act();
         hud.stage.draw();
 
-        mapRenderer.render();
+        MyGame.batch.setProjectionMatrix(gameCam.combined);
 
-        b2dr.render(world,gamecam.combined);
-        game.batch.begin();
-        mainCharacter.McSprite.draw(game.batch);
-        game.batch.end();
+        MyGame.batch.begin();
+        mainCharacter.sprite.draw(MyGame.batch);
+        MyGame.batch.end();
     }
 
     @Override
@@ -147,7 +142,7 @@ public class PlayScreen implements Screen {
         map.dispose();
         mapRenderer.dispose();
         world.dispose();
-        b2dr.dispose();
+        debugRenderer.dispose();
         hud.dispose();
     }
 }

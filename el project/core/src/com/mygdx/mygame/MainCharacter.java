@@ -4,45 +4,33 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 
 public class MainCharacter extends Body2D
 {
     private static MainCharacter instance;
-    public PlayScreen screen;
-    public Sprite McSprite;
-    public TextureRegion stand;
+    Sprite sprite;
+    static Rectangle rectangle;
 
-    private MainCharacter()
+    private MainCharacter(Rectangle rectangle)
     {
-        DefineBody();
-        DefineShape();
-        DefineFixture();
-        super.CreateBody();
+        super(rectangle);
     }
 
     @Override
-    public void DefineBody() {
+    public void DefineBody()
+    {
         bdef.type = BodyDef.BodyType.DynamicBody;
-        bdef.position.set(20,100);
-    }
-
-    @Override
-    public void DefineShape() {
-        shape.setAsBox(10,15);
-    }
-
-    @Override
-    public void DefineFixture() {
-        //fdef.friction = 10f;
-        fdef.shape = shape;
+        bdef.position.set(rectangle.x + (rectangle.getWidth() / 2), rectangle.y + (rectangle.getHeight() / 2));
     }
 
     public static MainCharacter GetMainCharacter()
     {
         if(instance == null)
         {
-            instance = new MainCharacter();
+            rectangle = new Rectangle(64, 16, 16, 32);
+            instance = new MainCharacter(rectangle);
         }
 
         return instance;
